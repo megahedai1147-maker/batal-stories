@@ -1,9 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40)
@@ -32,26 +34,31 @@ export default function Navbar() {
 
         {/* ── LOGO ── */}
         <a href="#" className="flex items-center gap-2" aria-label="بطل ستوريز">
-          <div
-            style={{
-              width:'40px', height:'40px',
-              background:'linear-gradient(135deg,#FF2D7A,#FF7A1A)',
-              borderRadius:'12px',
-              boxShadow:'0 4px 14px rgba(255,45,122,0.35)',
-              display:'flex', alignItems:'center', justifyContent:'center',
-              fontSize:'20px',
-            }}
-          >
-            📖
-          </div>
-          <div>
-            <div className="font-tajawal font-black text-lg leading-none" style={{ color:'var(--navy)' }}>
-              بطل ستوريز
+          {!logoError ? (
+            <Image
+              src="/logo.png"
+              alt="Batal Stories"
+              width={120}
+              height={44}
+              style={{ objectFit:'contain', height:'44px', width:'auto' }}
+              priority
+              onError={() => setLogoError(true)}
+            />
+          ) : (
+            <div className="flex items-center gap-2">
+              <div style={{
+                width:'40px', height:'40px',
+                background:'linear-gradient(135deg,#FF2D7A,#FF7A1A)',
+                borderRadius:'12px',
+                display:'flex', alignItems:'center', justifyContent:'center',
+                fontSize:'20px',
+              }}>📖</div>
+              <div>
+                <div className="font-tajawal font-black text-lg leading-none" style={{ color:'var(--navy)' }}>بطل ستوريز</div>
+                <div className="font-cairo text-xs font-bold mt-0.5" style={{ color:'var(--pink)' }}>طفلك بطل القصة</div>
+              </div>
             </div>
-            <div className="font-cairo text-xs leading-none font-bold mt-0.5" style={{ color:'var(--pink)' }}>
-              طفلك بطل القصة
-            </div>
-          </div>
+          )}
         </a>
 
         {/* Desktop links */}
