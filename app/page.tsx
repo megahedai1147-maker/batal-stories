@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import FomoBanner  from '@/components/FomoBanner'
 import Navbar      from '@/components/Navbar'
 import Hero        from '@/components/Hero'
 import Catalog     from '@/components/Catalog'
@@ -10,7 +11,6 @@ import Order       from '@/components/Order'
 import Footer      from '@/components/Footer'
 
 export default function Home() {
-  // Scroll reveal
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
@@ -27,8 +27,17 @@ export default function Home() {
 
   return (
     <main>
-      <Navbar />
-      <Hero />
+      <FomoBanner />
+      <div style={{ paddingTop: '40px' }}>
+        <Navbar />
+        <Hero />
+        <Catalog />
+        <HowItWorks />
+        <Pricing />
+        <Reviews />
+        <Order />
+        <Footer />
+      </div>
       <Catalog />
       <HowItWorks />
       <Pricing />
@@ -38,7 +47,7 @@ export default function Home() {
 
       {/* WhatsApp floating button */}
       <a
-        href="https://wa.me/201034502000?text=أهلاً، عايز أعرف أكتر عن بطل ستوريز"
+        href="https://wa.me/201000000000?text=أهلاً، عايز أعرف أكتر عن بطل ستوريز"
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp-float"
