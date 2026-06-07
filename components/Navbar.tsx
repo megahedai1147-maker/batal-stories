@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
@@ -32,15 +31,27 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
 
         {/* ── LOGO ── */}
-        <a href="#" className="flex items-center" aria-label="بطل ستوريز">
-          <Image
-            src="/logo.png"
-            alt="Batal Stories Logo"
-            width={130}
-            height={48}
-            style={{ objectFit:'contain', height:'44px', width:'auto' }}
-            priority
-          />
+        <a href="#" className="flex items-center gap-2" aria-label="بطل ستوريز">
+          <div
+            style={{
+              width:'40px', height:'40px',
+              background:'linear-gradient(135deg,#FF2D7A,#FF7A1A)',
+              borderRadius:'12px',
+              boxShadow:'0 4px 14px rgba(255,45,122,0.35)',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              fontSize:'20px',
+            }}
+          >
+            📖
+          </div>
+          <div>
+            <div className="font-tajawal font-black text-lg leading-none" style={{ color:'var(--navy)' }}>
+              بطل ستوريز
+            </div>
+            <div className="font-cairo text-xs leading-none font-bold mt-0.5" style={{ color:'var(--pink)' }}>
+              طفلك بطل القصة
+            </div>
+          </div>
         </a>
 
         {/* Desktop links */}
