@@ -28,16 +28,8 @@ export default function Home() {
   return (
     <main>
       <FomoBanner />
-      <div style={{ paddingTop: '40px' }}>
-        <Navbar />
-        <Hero />
-        <Catalog />
-        <HowItWorks />
-        <Pricing />
-        <Reviews />
-        <Order />
-        <Footer />
-      </div>
+      <Navbar />
+      <Hero />
       <Catalog />
       <HowItWorks />
       <Pricing />

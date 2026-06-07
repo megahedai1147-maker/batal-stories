@@ -16,7 +16,7 @@ export default function Hero() {
       <BlobDecor />
       <FloatingDeco />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-36 pb-16 w-full">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
 
           {/* ── LEFT: TEXT ── */}
