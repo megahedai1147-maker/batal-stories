@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطل ستوريز — اطلب قصة طفلك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2140; --paper:#fbf7ef; --card:#ffffff;
+    --sun:#ffb703; --sun-deep:#f48c06; --sky:#4cc9f0;
+    --grape:#7b2cbf; --grape-soft:#efe3fb; --rose:#ff6b9d; --leaf:#43aa8b;
+    --line:#eadfce; --shadow:0 10px 40px rgba(43,33,64,.10); --shadow-lg:0 20px 60px rgba(43,33,64,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:
+      radial-gradient(1200px 500px at 80% -10%, #fff2d6 0%, transparent 60%),
+      radial-gradient(1000px 500px at -10% 20%, #e7f6ff 0%, transparent 55%),
+      var(--paper);
+    color:var(--ink);min-height:100vh;padding:20px 16px 40px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:540px;margin:0 auto}
+
+  .brand{text-align:center;margin:6px 0 20px}
+  .brand .star{font-size:36px;display:inline-block;animation:pop .6s ease}
+  .brand h1{font-family:'Baloo Bhaijaan 2',cursive;font-size:28px;font-weight:800;color:var(--grape);line-height:1.15;margin-top:4px}
+  .brand p{font-size:14.5px;color:#6b6280;margin-top:6px}
+  @keyframes pop{0%{transform:scale(0) rotate(-20deg)}70%{transform:scale(1.2) rotate(8deg)}100%{transform:scale(1)}}
+
+  .card{
+    background:var(--card);border-radius:24px;padding:22px 18px;box-shadow:var(--shadow);
+    border:2px solid #fff;position:relative;margin-bottom:16px;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;border-radius:24px;padding:2px;
+    background:linear-gradient(135deg,var(--grape-soft),transparent 40%,#fff5d6 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+  .sec-title{display:flex;align-items:center;gap:10px;font-family:'Baloo Bhaijaan 2',cursive;font-weight:700;font-size:19px;margin-bottom:14px;color:var(--ink)}
+  .sec-title .n{width:28px;height:28px;border-radius:50%;background:var(--grape);color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
+
+  label{display:block;font-weight:700;font-size:14.5px;margin:13px 0 7px;color:var(--ink)}
+  label .opt{font-weight:400;color:#9a92ad;font-size:12.5px}
+  .hint{font-size:12.5px;color:#9a92ad;margin-top:5px;line-height:1.55}
+
+  input[type=text],input[type=tel],textarea,select{
+    width:100%;padding:13px 14px;border:2px solid var(--line);border-radius:14px;
+    font-family:'Cairo',sans-serif;font-size:16px;color:var(--ink);background:#fffdf9;transition:.2s;
+  }
+  /* 16px above prevents iOS Safari from auto-zooming when a field is focused */
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 4px rgba(76,201,240,.15)}
+  textarea{resize:vertical;min-height:60px}
+  input.err,select.err,textarea.err{border-color:var(--rose);box-shadow:0 0 0 4px rgba(255,107,157,.12)}
+
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chip{
+    border:2px solid var(--line);border-radius:15px;padding:11px 8px;text-align:center;cursor:pointer;
+    background:#fffdf9;transition:.18s;font-weight:700;font-size:14.5px;user-select:none;position:relative;
+  }
+  .chip .emoji{font-size:22px;display:block;margin-bottom:2px}
+  .chip:hover{transform:translateY(-2px);border-color:var(--sun)}
+  .chip.sel{border-color:var(--grape);background:var(--grape-soft);color:var(--grape)}
+  .chip.sel::after{content:"✓";position:absolute;top:5px;left:8px;color:var(--grape);font-weight:800}
+
+  /* child block */
+  .child-block{border:2px dashed var(--grape-soft);border-radius:18px;padding:16px 14px;margin-bottom:12px;position:relative;background:#fdfbff}
+  .child-block .cb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .child-block .cb-title{font-family:'Baloo Bhaijaan 2',cursive;font-weight:700;font-size:16px;color:var(--grape)}
+  .child-block .remove{background:#ffeef4;color:var(--rose);border:none;border-radius:10px;padding:5px 11px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif}
+  .child-block .remove:hover{background:#ffd9e6}
+  .add-child{
+    width:100%;border:2px dashed var(--sun);background:#fffaf0;color:var(--sun-deep);border-radius:15px;
+    padding:13px;font-family:'Baloo Bhaijaan 2',cursive;font-weight:700;font-size:15px;cursor:pointer;transition:.18s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .add-child:hover{background:#fff2d6;transform:translateY(-1px)}
+
+  /* photo uploader */
+  .uploader{
+    border:2px dashed var(--sky);border-radius:14px;padding:14px;text-align:center;cursor:pointer;
+    background:#f4fbff;transition:.18s;position:relative;overflow:hidden;
+  }
+  .uploader:hover{background:#e7f6ff;border-color:var(--grape)}
+  .uploader.has{border-style:solid;border-color:var(--leaf);background:#f0fbf6;padding:8px}
+  .uploader .up-ico{font-size:26px;margin-bottom:4px}
+  .uploader .up-txt{font-size:13px;font-weight:700;color:var(--sky)}
+  .uploader .up-sub{font-size:11.5px;color:#9a92ad;margin-top:2px}
+  .uploader input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .uploader .prev{display:flex;align-items:center;gap:10px;justify-content:center}
+  .uploader .prev img{width:52px;height:52px;border-radius:10px;object-fit:cover;border:2px solid var(--leaf)}
+  .uploader .prev .ok{font-size:13px;font-weight:700;color:var(--leaf)}
+  .uploader.loading{border-color:var(--sun);background:#fffaf0}
+  .spin{width:22px;height:22px;border:3px solid #ffe0a3;border-top-color:var(--sun-deep);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  /* packages */
+  .packs{display:flex;flex-direction:column;gap:11px}
+  .pack{
+    border:2px solid var(--line);border-radius:17px;padding:14px 15px;cursor:pointer;background:#fffdf9;
+    transition:.18s;display:flex;align-items:center;gap:13px;position:relative;
+  }
+  .pack:hover{border-color:var(--sun);transform:translateX(-3px)}
+  .pack.sel{border-color:var(--grape);background:var(--grape-soft)}
+  .pack .pemoji{font-size:29px;flex:none}
+  .pack .pinfo{flex:1}
+  .pack .pname{font-weight:800;font-size:15.5px;font-family:'Baloo Bhaijaan 2',cursive}
+  .pack .pdesc{font-size:12px;color:#8a82a0;margin-top:2px}
+  .pack .pprice{font-weight:800;font-size:18px;color:var(--sun-deep);white-space:nowrap;text-align:left}
+  .pack .pprice s{display:block;color:#c3bcd0;font-size:12px;font-weight:600}
+  .pack .pprice .allin{display:block;color:#9a92ad;font-size:10.5px;font-weight:600}
+  .pack .badge{position:absolute;top:-9px;left:14px;background:var(--rose);color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;box-shadow:0 4px 12px rgba(255,107,157,.4)}
+  .pack-empty{border:2px dashed var(--line);border-radius:16px;padding:20px 16px;text-align:center;color:#9a92ad;font-size:13.5px;font-weight:600;line-height:1.7;background:#fffdf9}
+
+  /* price bar */
+  .pricebar{
+    position:sticky;bottom:14px;z-index:20;margin-top:18px;
+    background:linear-gradient(135deg,var(--grape),#5a189a);color:#fff;border-radius:20px;
+    padding:15px 20px;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:space-between;
+  }
+  .pricebar .plabel{font-size:12.5px;opacity:.85}
+  .pricebar .pbreak{font-size:11.5px;opacity:.7;margin-top:2px}
+  .pricebar .pbig{font-family:'Baloo Bhaijaan 2',cursive;font-size:28px;font-weight:800;line-height:1}
+  .pricebar .pbig .cur{font-size:15px;opacity:.9}
+  .flash{animation:flash .4s ease}
+  @keyframes flash{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+  .cta{
+    width:100%;margin-top:16px;padding:16px;border:none;border-radius:18px;cursor:pointer;
+    background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;font-family:'Baloo Bhaijaan 2',cursive;
+    font-size:18px;font-weight:800;box-shadow:0 12px 30px rgba(244,140,6,.35);transition:.2s;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+  }
+  .cta:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(244,140,6,.45)}
+  .cta:active{transform:translateY(0)}
+  .cta:disabled{opacity:.55;cursor:not-allowed;transform:none}
+  .cta.wapay{background:linear-gradient(135deg,#25D366,#128C7E);box-shadow:0 12px 30px rgba(37,211,102,.35)}
+
+  .errbox{background:#fff0f5;border:1.5px solid #ffc2d6;color:#c9184a;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600;margin-top:12px;display:none}
+  .errbox.show{display:block}
+  .reassure{text-align:center;font-size:12.5px;color:#9a92ad;margin-top:13px;line-height:1.7}
+  .reassure b{color:var(--leaf)}
+  .trust{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px}
+  .trust span{background:#fff;border:1.5px solid var(--line);border-radius:99px;padding:6px 13px;font-size:12px;font-weight:600;color:#6b6280;box-shadow:0 3px 10px rgba(43,33,64,.05)}
+
+  /* confirm overlay */
+  .overlay{position:fixed;inset:0;background:rgba(43,33,64,.55);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+  .overlay.show{display:flex;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{background:var(--paper);width:100%;max-width:540px;border-radius:26px 26px 0 0;padding:24px 20px 26px;max-height:92vh;overflow-y:auto;animation:slideup .3s cubic-bezier(.2,.8,.2,1)}
+  @keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .sheet .grab{width:44px;height:5px;background:var(--line);border-radius:99px;margin:0 auto 16px}
+  .sheet h2{font-family:'Baloo Bhaijaan 2',cursive;font-size:22px;color:var(--grape);text-align:center;margin-bottom:4px}
+  .sheet .sub{text-align:center;font-size:13px;color:#8a82a0;margin-bottom:18px}
+  .steps{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .steps .st{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .steps .st.on{background:var(--grape);width:22px;border-radius:99px}
+  .rev-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .rev-row .k{color:#8a82a0;font-weight:600;flex:none}
+  .rev-row .v{color:var(--ink);font-weight:700;text-align:left}
+  .rev-child{background:#fff;border-radius:14px;padding:10px 12px;margin-bottom:9px;box-shadow:0 4px 14px rgba(43,33,64,.06);display:flex;align-items:center;gap:11px}
+  .rev-child img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid var(--grape-soft);flex:none}
+  .rev-child .rc-name{font-family:'Baloo Bhaijaan 2',cursive;font-weight:700;color:var(--grape);font-size:15px}
+  .rev-child .rc-meta{font-size:12px;color:#8a82a0;margin-top:1px}
+  .rev-total{background:linear-gradient(135deg,var(--grape),#5a189a);color:#fff;border-radius:16px;padding:15px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+  .rev-total .rt-label{font-size:13px;opacity:.85}
+  .rev-total .rt-big{font-family:'Baloo Bhaijaan 2',cursive;font-size:26px;font-weight:800}
+  .pay-note{background:#fffaf0;border:1.5px solid #ffe0a3;border-radius:14px;padding:13px 15px;margin-top:16px;font-size:13px;color:#8a6d1f;line-height:1.7}
+  .pay-note b{color:var(--sun-deep)}
+  .btn-back{width:100%;margin-top:10px;padding:13px;border:2px solid var(--line);background:#fff;border-radius:15px;font-family:'Cairo',sans-serif;font-weight:700;font-size:14.5px;color:#6b6280;cursor:pointer}
+  .btn-back:hover{background:#f7f2e9}
+  .paybox{background:#fff;border:2px solid var(--grape-soft);border-radius:16px;padding:18px 16px;margin-top:14px;text-align:center;line-height:1.9}
+  .paybox .amt{font-family:'Baloo Bhaijaan 2',cursive;font-size:20px;color:var(--grape)}
+  .paybox .num-wrap{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .paybox .num{font-size:26px;font-weight:800;color:var(--sun-deep);letter-spacing:1px;direction:ltr;display:inline-block}
+  .paybox .copy{background:var(--grape-soft);color:var(--grape);border:none;border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif}
+  .paybox .copy:active{transform:scale(.95)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <span class="star">⭐</span>
+    <h1>خلي طفلك بطل القصة</h1>
+    <p>بيانات بسيطة، السعر يظهرلك فوراً ✨</p>
+  </div>
+
+  <!-- SECTION 1: CHILDREN -->
+  <div class="card">
+    <div class="sec-title"><span class="n">1</span> أبطال القصة</div>
+    <div id="childrenWrap"></div>
+    <button class="add-child" id="addChildBtn">➕ أضف طفل تاني</button>
+  </div>
+
+  <!-- SECTION 2: DELIVERY -->
+  <div class="card">
+    <div class="sec-title"><span class="n">2</span> بيانات التوصيل</div>
+
+    <label>اسم المستلم <span style="color:var(--rose)">*</span></label>
+    <input type="text" id="fullName" placeholder="الاسم اللي هيستلم الكتاب">
+
+    <label>رقم موبايل / واتساب <span style="color:var(--rose)">*</span></label>
+    <input type="tel" id="phone" placeholder="01xxxxxxxxx" inputmode="numeric">
+    <div class="hint">مندوب الشحن هيتواصل على الرقم ده</div>
+
+    <label>المحافظة <span style="color:var(--rose)">*</span></label>
+    <select id="gov"><option value="">اختار المحافظة</option></select>
+    <div class="hint">لازم تختار المحافظة الأول عشان نعرضلك الباقات بالسعر النهائي</div>
+
+    <label>العنوان <span style="color:var(--rose)">*</span></label>
+    <input type="text" id="address" placeholder="مثال: مصر الجديدة - ميدان....">
+  </div>
+
+  <!-- SECTION 3: PACKAGE -->
+  <div class="card">
+    <div class="sec-title"><span class="n">3</span> اختار الباقة</div>
+    <div class="packs" id="packs"></div>
+  </div>
+
+  <!-- LIVE PRICE -->
+  <div class="pricebar" id="priceBar">
+    <div>
+      <div class="plabel">السعر الإجمالي</div>
+      <div class="pbreak" id="priceBreak">اختار المحافظة عشان يظهر السعر</div>
+    </div>
+    <div class="pbig" id="priceBig">—</div>
+  </div>
+
+  <div class="errbox" id="errBox"></div>
+
+  <button class="cta" id="reviewBtn">راجع طلبك والسعر النهائي ✨</button>
+
+  <div class="reassure"><b>دفعك مؤمّن 100%</b> — لو حصلت أي مشكلة، فلوسك ترجعلك كاملة</div>
+  <div class="trust"><span>⚡ تسليم سريع</span><span>🎨 مخصص 100%</span><span>❤️ +500 طفل بطل</span></div>
+</div>
+
+<!-- CONFIRM / PAY OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="steps"><span class="st on" id="dot1"></span><span class="st" id="dot2"></span></div>
+
+    <!-- STAGE 1: REVIEW -->
+    <div id="stage1">
+      <h2>راجع طلبك 🎉</h2>
+      <p class="sub">اتأكد إن كل حاجة صح قبل ما تكمّل الشراء</p>
+      <div id="reviewBody"></div>
+      <div class="rev-total">
+        <div><div class="rt-label">الإجمالي النهائي</div><div style="font-size:11px;opacity:.7" id="revBreak"></div></div>
+        <div class="rt-big" id="revTotal">—</div>
+      </div>
+      <button class="cta wapay" id="continueBtn"><span style="font-size:22px">✅</span> تأكيد الشراء</button>
+      <button class="btn-back" id="backBtn">← رجوع أعدّل</button>
+    </div>
+
+    <!-- STAGE 2: PAYMENT -->
+    <div id="stage2" style="display:none">
+      <h2>إتمام الشراء 💳</h2>
+      <p class="sub">اختار طريقة وقيمة الدفع، حوّل، وابعت صورة التحويل</p>
+
+      <label>طريقة الدفع</label>
+      <div class="chips" id="payMethodChips">
+        <div class="chip" data-val="instapay"><span class="emoji">📲</span>إنستاباي</div>
+        <div class="chip" data-val="vodafone"><span class="emoji">💜</span>فودافون كاش</div>
+      </div>
+
+      <label>قيمة الدفع</label>
+      <div class="chips" id="payAmountChips">
+        <div class="chip" data-val="deposit">عربون 50%</div>
+        <div class="chip" data-val="full">دفع كامل 100%</div>
+      </div>
+
+      <div class="paybox" id="payNumberBox" style="display:none"></div>
+
+      <div class="pay-note">
+        📸 بعد ما تحوّل، دوس الزرار تحت — هيرفع طلبك ويفتحلك واتساب بطل عشان تبعت صورة التحويل ✅
+      </div>
+
+      <button class="cta wapay" id="goWaBtn" disabled><span style="font-size:22px">📤</span> ارسال بيانات التحويل</button>
+      <button class="btn-back" id="backToReviewBtn">← رجوع للملخص</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const WHATSAPP_NUMBER   = "201034502000";
+const SHEET_ENDPOINT     = "https://script.google.com/macros/s/AKfycbzjuG5evQstncdl5M3Yq_WlArlnbPr3A1cPaJGvsTmVLWKvj_qG1gJYB2VB_SbEvTN9/exec";  // ← Google Apps Script Web App (Batal Orders, deployed 22 Jul 2026)
+
+// Both numbers accept BOTH InstaPay and Vodafone Cash (confirmed by Mohamed).
+// The pay page shows ONE number, chosen ~50/50 at random so incoming
+// transfers split roughly evenly across the two accounts ("50% each number").
+const PAYMENT_NUMBERS = ["01014588522", "01008006933"];
+
+const GOVERNORATES = {
+  "القاهرة":50,"الجيزة":50,"القليوبية":50,
+  "الإسكندرية":65,"البحيرة":65,"الدقهلية":65,"الغربية":65,"المنوفية":65,
+  "كفر الشيخ":65,"دمياط":65,"الشرقية":65,
+  "بورسعيد":75,"الإسماعيلية":75,"السويس":75,"شمال سيناء":90,"جنوب سيناء":90,
+  "الفيوم":70,"بني سويف":70,"المنيا":75,"أسيوط":80,
+  "سوهاج":80,"قنا":85,"الأقصر":85,"أسوان":85,
+  "البحر الأحمر":90,"الوادي الجديد":95,"مطروح":90
+};
+// ⚠️ Shipping value is HIDDEN from the customer (no separate shipping line
+// shown). It is baked into the all-in package price ("شامل التوصيل") and
+// stored internally in Sheet column P.
+
+const STORIES = ["الصدق ينجي","شجاعة المختلف","المشاركة تضاعف الفرح","الصبر مفتاح الفرج","الأمانة كنز","احترام الكبير","كلمة طيبة تزرع سعادة","مشاعري تهم","الحق يُقال","صديقتي المختلفة","الوعد أمانة","ترتيب الأولويات","رفيق رمضان","الدعاء يصل السماء","صحابة صغار","الجنة حلمي","بر الوالدين","حافظ القرآن الصغير","فرحة العيد","أمي جنتي","ملاك الصدقة","حجابي تاجي","صلاتي نوري","مريم البطلة","قبطان الغابة","رحالة الصحراء","بطل الأعماق","رائد الجبال","مستكشف الكواكب","محقق الأسرار","مستكشفة الغابة السرية","قائدة البحر","رحلة إلى المجهول","الفلكية الصغيرة","محققة الأحياء","بطلة الجبال","الطبيب الصغير","المهندس الصغير","بطل الملعب","المخترع العبقري","قائد الغد","رسام الكون","الطبيبة الصغيرة","المعلمة المحبوبة","مصممة الأزياء","صانعة السينما","العالِمة الصغيرة","موسيقية القلوب","ساحر الكلمات","حارس المملكة السحرية","التنين الصديق","مملكة تحت البحر","المدينة الطائرة","آلة الزمن","ساحرة النور","حديقة السحر","فراشة الأحلام","ملكة الأمواج","بنت الغيوم","أميرة القصص","بطل الطابور","الكلمة الطيبة","شكرًا... تصنع السعادة","أستأذن أولًا","البطل الذي يساعد الجميع","بطل الحديقة النظيفة","الفصل النظيف","لا للتنمر... نعم للصداقة","آداب تناول الطعام","السلام بداية الصداقة","غرفتي مسؤوليتي","الاستئذان قبل الدخول","أحافظ على أدواتي","أساعد زملائي","كلمة سحرية اسمها من فضلك","البطل الخارق الشجاع","قوة القلب الطيب","بطل لا يستسلم","درع الشجاعة","مهمة إنقاذ المدينة","البطل الذي هزم الخوف","قوة الإرادة الخارقة","البطل الصغير في مواجهة التنمر","أميرة الأحلام","أميرة اليونيكورن","أميرة الفراشات","أميرة الزهور","أميرة القمر","أميرة النجوم","أميرة الكريستال","الأميرة والقلعة السرية","أميرة البحر","أميرة مدينة الأحلام","مدينة الأحلام الوردية"];
+// ⚠️ OPEN ITEM: still the old 20-item placeholder list, NOT the real 94-title
+// catalog. Swap this array once the real list arrives — nothing else changes.
+
+// Package pricing. Four discrete packages: 1 story, 2 stories, 3 stories, premium.
+// Which cards are shown depends on the number of children (see availablePacks):
+//   1 child  → all 4 (1 / 2 / 3 / premium)
+//   2 children → قصتين + premium
+//   3 children → 3 قصص + premium
+//   4+ children → adaptive multi-story pack (3-pack based) + premium  ⚠️ assumption
+const AFTER_PRICES = {1:199, 2:359, 3:499};
+const PRE_PRICES   = {1:299, 2:539, 3:750}; // 539 = estimate, confirm real 2-story pre-discount number
+function packageCost(n, prices){ // DP over pack sizes {1,2,3} for 4+ children
+  const cost=[0];
+  for(let i=1;i<=n;i++){
+    let best=Infinity;
+    for(let k=1;k<=Math.min(3,i);k++) best=Math.min(best, prices[k]+cost[i-k]);
+    cost.push(best);
+  }
+  return cost[n];
+}
+function premiumPrice(n){ return 1299*n; }
+function premiumPreDiscount(n){ return 1799*n; }
+
+function premiumCard(n){
+  return {type:'premium', name:'بريميوم', emoji:'👑',
+    desc: n>1 ? `هارد كافر + تغليف هدية — لكل طفل (${n})` : 'هارد كافر + تغليف هدية فاخر',
+    after: premiumPrice(n), pre: premiumPreDiscount(n), badge:'هدية فاخرة', badgeColor:'var(--grape)'};
+}
+// Returns the package cards to SHOW for a given number of children.
+function availablePacks(n){
+  if(n===1) return [
+    {type:'p1', name:'قصة واحدة', emoji:'📖', desc:'قصة واحدة مطبوعة', after:AFTER_PRICES[1], pre:PRE_PRICES[1]},
+    {type:'p2', name:'قصتين',     emoji:'📖', desc:'قصتين مطبوعين',     after:AFTER_PRICES[2], pre:PRE_PRICES[2]},
+    {type:'p3', name:'3 قصص',     emoji:'📚', desc:'3 قصص مطبوعة',      after:AFTER_PRICES[3], pre:PRE_PRICES[3], badge:'الأكتر مبيعاً', badgeColor:'var(--rose)'},
+    premiumCard(1)
+  ];
+  if(n===2) return [
+    {type:'p2', name:'قصتين', emoji:'📖', desc:'قصة مطبوعة لكل طفل (٢ أطفال)', after:AFTER_PRICES[2], pre:PRE_PRICES[2]},
+    premiumCard(2)
+  ];
+  if(n===3) return [
+    {type:'p3', name:'3 قصص', emoji:'📚', desc:'قصة مطبوعة لكل طفل (٣ أطفال)', after:AFTER_PRICES[3], pre:PRE_PRICES[3], badge:'الأكتر مبيعاً', badgeColor:'var(--rose)'},
+    premiumCard(3)
+  ];
+  return [ // 4+ children (documented assumption): adaptive pack + premium
+    {type:'multi', name:`${n} قصص`, emoji:'📚', desc:'قصة مطبوعة لكل طفل', after:packageCost(n,AFTER_PRICES), pre:packageCost(n,PRE_PRICES)},
+    premiumCard(n)
+  ];
+}
+
+const DEPOSIT_RATE = 0.5;
+
+// ---- shared state (declared BEFORE any function that reads it runs) ----
+const S = { packType:null, packBase:0, packLabel:"" };
+const PAY = { method:null, amount:null };
+const childPhotos = {}; // id -> {dataUrl, base64, mimeType}
+let childCount = 0;
+let ORDER = null;
+/* ========================================= */
+
+const govSel=document.getElementById('gov');
+const childrenWrap=document.getElementById('childrenWrap');
+const priceBig=document.getElementById('priceBig');
+const priceBreak=document.getElementById('priceBreak');
+const errBox=document.getElementById('errBox');
+
+function childCountNow(){ return document.querySelectorAll('.child-block').length || 1; }
+function storyOptions(){return '<option value="">اختار القصة</option>'+STORIES.map(s=>`<option>${s}</option>`).join('');}
+
+/* ---- children ---- */
+function addChild(){
+  childCount++;const id=childCount;
+  const block=document.createElement('div');
+  block.className='child-block';block.dataset.id=id;
+  block.innerHTML=`
+    <div class="cb-head">
+      <div class="cb-title">👶 الطفل ${id}</div>
+      ${id>1?`<button class="remove" data-rm="${id}">✕ حذف</button>`:''}
+    </div>
+    <label>اسم الطفل <span style="color:var(--rose)">*</span></label>
+    <input type="text" class="c-name" placeholder="مثال: يوسف">
+
+    <label>الطفل ولد ولا بنت؟ <span style="color:var(--rose)">*</span></label>
+    <div class="chips c-gender">
+      <div class="chip" data-val="ولد"><span class="emoji">👦</span>ولد</div>
+      <div class="chip" data-val="بنت"><span class="emoji">👧</span>بنت</div>
+    </div>
+
+    <label>السن <span style="color:var(--rose)">*</span></label>
+    <select class="c-age">
+      <option value="">اختار السن</option>
+      <option>سنة - سنتين</option><option>3 سنوات</option><option>4 سنوات</option>
+      <option>5 سنوات</option><option>6 سنوات</option><option>7 سنوات</option>
+      <option>8 سنوات</option><option>9 سنوات</option><option>10 سنوات</option><option>أكبر من 10</option>
+    </select>
+
+    <label>القصة <span style="color:var(--rose)">*</span></label>
+    <select class="c-story">${storyOptions()}</select>
+
+    <label>اللغة</label>
+    <select class="c-language">
+      <option value="عربي" selected>عربي</option>
+      <option value="إنجليزي">إنجليزي</option>
+    </select>
+
+    <label>صورة الطفل <span style="color:var(--rose)">*</span> <span class="opt">(صورة واحدة واضحة من الأمام)</span></label>
+    <div class="uploader c-uploader" data-cid="${id}">
+      <div class="up-body">
+        <div class="up-ico">📸</div>
+        <div class="up-txt">اضغط لرفع صورة الطفل</div>
+        <div class="up-sub">صورة واضحة من الأمام</div>
+      </div>
+      <input type="file" class="c-file" accept="image/*">
+    </div>
+  `;
+  childrenWrap.appendChild(block);
+
+  block.querySelectorAll('.c-gender .chip').forEach(c=>{
+    c.onclick=()=>{block.querySelectorAll('.c-gender .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');block.dataset.gender=c.dataset.val;};
+  });
+  const up=block.querySelector('.c-uploader');
+  const file=block.querySelector('.c-file');
+  file.onchange=()=>handleUpload(file,up,id);
+
+  const rm=block.querySelector('[data-rm]');
+  if(rm)rm.onclick=()=>{block.remove();delete childPhotos[id];renderPacks();calcPrice();};
+
+  renderPacks();calcPrice();
+}
+
+/* ---- photo: browser-side compression (Fix 2) ---- */
+function compressImage(file, maxDim, quality){
+  maxDim=maxDim||1600; quality=quality||0.82;
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('read failed'));
+    reader.onload=e=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('image failed'));
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>h && w>maxDim){h=Math.round(h*maxDim/w);w=maxDim;}
+        else if(h>=w && h>maxDim){w=Math.round(w*maxDim/h);h=maxDim;}
+        const canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function handleUpload(fileInput,up,cid){
+  const f=fileInput.files[0];if(!f)return;
+  const body=up.querySelector('.up-body');
+  up.classList.add('loading');
+  body.innerHTML=`<div class="spin"></div><div class="up-sub" style="margin-top:6px">بنجهّز الصورة...</div>`;
+  try{
+    const dataUrl=await compressImage(f);
+    childPhotos[cid]={dataUrl, base64:dataUrl.split(',')[1], mimeType:'image/jpeg'};
+    up.classList.remove('loading');up.classList.add('has');
+    body.innerHTML=`<div class="prev"><img src="${dataUrl}"><div class="ok">✔ الصورة جاهزة</div></div>`;
+  }catch(e){
+    up.classList.remove('loading');
+    body.innerHTML=`<div class="up-ico">📸</div><div class="up-txt" style="color:var(--rose)">حصل خطأ، حاول تاني</div>`;
+  }
+}
+
+/* ---- packages: render AFTER governorate chosen, all-in price (شامل التوصيل) ---- */
+function renderPacks(){
+  const packsEl=document.getElementById('packs');
+  const gov=govSel.value;
+  if(!gov){
+    packsEl.innerHTML=`<div class="pack-empty">📍 اختار المحافظة الأول (قسم ٢ فوق)<br>عشان نعرضلك الباقات بالسعر النهائي شامل التوصيل</div>`;
+    return;
+  }
+  const n=childCountNow();
+  const ship=GOVERNORATES[gov]||0;
+  const cards=availablePacks(n);
+  // keep a valid selection: if the current pick isn't offered for this n, default to the first card
+  const sel = cards.find(c=>c.type===S.packType) || cards[0];
+  S.packType=sel.type; S.packBase=sel.after; S.packLabel=sel.name;
+  packsEl.innerHTML=cards.map(c=>`
+    <div class="pack ${c.type===S.packType?'sel':''}" data-type="${c.type}" data-base="${c.after}" data-label="${c.name}">
+      ${c.badge?`<span class="badge" style="background:${c.badgeColor||'var(--rose)'}">${c.badge}</span>`:''}
+      <span class="pemoji">${c.emoji}</span>
+      <div class="pinfo"><div class="pname">${c.name}</div><div class="pdesc">${c.desc}</div></div>
+      <div class="pprice">${c.after+ship} ج<s>${c.pre+ship} ج</s><span class="allin">شامل التوصيل</span></div>
+    </div>`).join('');
+  packsEl.querySelectorAll('.pack').forEach(p=>{
+    p.onclick=()=>{S.packType=p.dataset.type;S.packBase=+p.dataset.base;S.packLabel=p.dataset.label;renderPacks();calcPrice();};
+  });
+}
+
+function currentPackagePrice(){ return S.packBase; }
+function calcPrice(){
+  if(!govSel.value){
+    priceBig.textContent="—";
+    priceBreak.textContent="اختار المحافظة عشان يظهر السعر شامل التوصيل";
+    return;
+  }
+  const ship=GOVERNORATES[govSel.value]||0;
+  const total=currentPackagePrice()+ship;
+  priceBig.innerHTML=total+' <span class="cur">ج</span>';
+  priceBig.classList.remove('flash');void priceBig.offsetWidth;priceBig.classList.add('flash');
+  priceBreak.textContent="شامل التوصيل";
+}
+
+/* ---- gather + validate ---- */
+function gather(){
+  const kids=[];let kidErr=false,photoErr=false;
+  document.querySelectorAll('.child-block').forEach(b=>{
+    const id=b.dataset.id;
+    const name=b.querySelector('.c-name'),age=b.querySelector('.c-age'),story=b.querySelector('.c-story'),language=b.querySelector('.c-language');
+    const gender=b.dataset.gender||"";
+    [name,age,story].forEach(e=>e.classList.remove('err'));
+    if(!name.value.trim()){name.classList.add('err');kidErr=true;}
+    if(!gender)kidErr=true;
+    if(!age.value){age.classList.add('err');kidErr=true;}
+    if(!story.value){story.classList.add('err');kidErr=true;}
+    if(!childPhotos[id]){photoErr=true;b.querySelector('.c-uploader').style.borderColor='var(--rose)';}
+    kids.push({
+      n:name.value.trim(), gender, age:age.value, story:story.value, language:language.value,
+      photo: childPhotos[id]?childPhotos[id].dataUrl:"",
+      base64: childPhotos[id]?childPhotos[id].base64:"",
+      mimeType: childPhotos[id]?childPhotos[id].mimeType:""
+    });
+  });
+  return {kids,kidErr,photoErr};
+}
+
+document.getElementById('reviewBtn').onclick=()=>{
+  const fullName=document.getElementById('fullName'),phone=document.getElementById('phone'),address=document.getElementById('address');
+  [fullName,phone,address,govSel].forEach(e=>e.classList.remove('err'));
+  const {kids,kidErr,photoErr}=gather();
+  let errs=[];
+  if(kidErr)errs.push("بيانات كل طفل كاملة (بالجنس)");
+  if(photoErr)errs.push("صورة كل طفل");
+  if(!govSel.value){govSel.classList.add('err');errs.push("المحافظة");}
+  if(!S.packType)errs.push("الباقة");
+  if(!fullName.value.trim()){fullName.classList.add('err');errs.push("اسم المستلم");}
+  const phoneClean=phone.value.replace(/\D/g,'');
+  if(phoneClean.length<11){phone.classList.add('err');errs.push("رقم موبايل صحيح");}
+  if(!address.value.trim()){address.classList.add('err');errs.push("العنوان");}
+
+  if(errs.length){errBox.classList.add('show');errBox.textContent="محتاجين نكمّل: "+errs.join("، ");errBox.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  errBox.classList.remove('show');
+  buildReview(kids,fullName.value.trim(),phoneClean,address.value.trim());
+};
+
+/* ---- stage 1: review ---- */
+function setStage(n){
+  document.getElementById('stage1').style.display = n===1?'block':'none';
+  document.getElementById('stage2').style.display = n===2?'block':'none';
+  document.getElementById('dot1').classList.toggle('on', n===1);
+  document.getElementById('dot2').classList.toggle('on', n===2);
+}
+function buildReview(kids,fullName,phone,address){
+  const ship=GOVERNORATES[govSel.value]||0;
+  const pkgPrice=currentPackagePrice();
+  const total=pkgPrice+ship;
+  let html='';
+  kids.forEach(k=>{
+    const img=(k.photo&&k.photo.startsWith('data:'))?`<img src="${k.photo}">`:`<div style="width:44px;height:44px;border-radius:10px;background:var(--grape-soft);display:grid;place-items:center;font-size:20px;flex:none">📸</div>`;
+    html+=`<div class="rev-child">${img}<div><div class="rc-name">${k.n} ${k.gender==='ولد'?'👦':'👧'}</div><div class="rc-meta">${k.age} · ${k.story} · ${k.language}</div></div></div>`;
+  });
+  html+=`
+    <div class="rev-row"><span class="k">الباقة</span><span class="v">${S.packLabel}</span></div>
+    <div class="rev-row"><span class="k">المستلم</span><span class="v">${fullName}</span></div>
+    <div class="rev-row"><span class="k">الموبايل</span><span class="v">${phone}</span></div>
+    <div class="rev-row"><span class="k">المحافظة</span><span class="v">${govSel.value}</span></div>
+    <div class="rev-row"><span class="k">العنوان</span><span class="v">${address}</span></div>`;
+  document.getElementById('reviewBody').innerHTML=html;
+  document.getElementById('revTotal').textContent=total+" ج";
+  document.getElementById('revBreak').textContent="شامل التوصيل";
+  const deposit=Math.ceil(total*DEPOSIT_RATE);
+  ORDER={
+    kids, packageLabel:S.packLabel, isPremium:(S.packType==='premium'), packagePrice:pkgPrice, shipping:ship, total,
+    fullName, phone, governorate:govSel.value, address,
+    shipmentSerial:null, deposit, remaining:total-deposit, saveFailed:false, saved:false
+  };
+  setStage(1);
+  document.getElementById('overlay').classList.add('show');
+}
+
+document.getElementById('backBtn').onclick=()=>document.getElementById('overlay').classList.remove('show');
+document.getElementById('overlay').onclick=(e)=>{if(e.target.id==='overlay')document.getElementById('overlay').classList.remove('show');};
+document.getElementById('continueBtn').onclick=()=>{ showStage2(); };
+document.getElementById('backToReviewBtn').onclick=()=>setStage(1);
+
+/* ---- stage 2: payment (InstaPay / Vodafone Cash × 100% / 50%) ---- */
+const METHOD_LABEL={instapay:'إنستاباي',vodafone:'فودافون كاش'};
+
+function showStage2(){
+  PAY.method=null;PAY.amount=null;
+  PAY.assignedNumber = PAYMENT_NUMBERS[Math.random()<0.5?0:1]; // ~50/50 split across the two accounts
+  document.querySelectorAll('#payMethodChips .chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('#payAmountChips .chip').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('payNumberBox').style.display='none';
+  const goBtn=document.getElementById('goWaBtn');
+  goBtn.disabled=true;goBtn.innerHTML='<span style="font-size:22px">📤</span> ارسال بيانات التحويل';
+  setStage(2);
+}
+document.querySelectorAll('#payMethodChips .chip').forEach(c=>{
+  c.onclick=()=>{document.querySelectorAll('#payMethodChips .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');PAY.method=c.dataset.val;updatePayBox();};
+});
+document.querySelectorAll('#payAmountChips .chip').forEach(c=>{
+  c.onclick=()=>{document.querySelectorAll('#payAmountChips .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');PAY.amount=c.dataset.val;updatePayBox();};
+});
+function updatePayBox(){
+  const box=document.getElementById('payNumberBox');
+  const goBtn=document.getElementById('goWaBtn');
+  if(!PAY.method||!PAY.amount){box.style.display='none';goBtn.disabled=true;return;}
+  const amount=PAY.amount==='full'?ORDER.total:ORDER.deposit;
+  const num=PAY.assignedNumber;
+  box.style.display='block';
+  box.innerHTML=`حوّل <span class="amt">${amount} ج</span> على ${METHOD_LABEL[PAY.method]}
+    <div class="num-wrap"><span class="num">${num}</span><button class="copy" data-num="${num}">نسخ</button></div>`;
+  const cp=box.querySelector('.copy');
+  cp.onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(cp.dataset.num);cp.textContent='✔ اتنسخ';setTimeout(()=>cp.textContent='نسخ',1500);};
+  goBtn.disabled=false;
+}
+
+/* ---- upload to Google Apps Script (Fix 3: never blocks the customer) ---- */
+async function submitOrder(){
+  if(!SHEET_ENDPOINT) return {ok:false};
+  const payload={
+    action:'saveOrder',
+    fullName:ORDER.fullName, phone:ORDER.phone, address:ORDER.address, governorate:ORDER.governorate,
+    packageLabel: ORDER.packageLabel,
+    total:ORDER.total, shippingCost:ORDER.shipping,
+    kids: ORDER.kids.map(k=>({name:k.n,gender:k.gender,age:k.age,story:k.story,language:k.language,base64:k.base64,mimeType:k.mimeType}))
+  };
+  try{
+    const res=await fetch(SHEET_ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    return (data && data.ok) ? data : {ok:false};
+  }catch(e){ return {ok:false}; }
+}
+
+/* ---- FINAL BUTTON: upload data to Google, then open Batal WhatsApp ---- */
+document.getElementById('goWaBtn').onclick=async()=>{
+  if(!PAY.method||!PAY.amount)return;
+  const btn=document.getElementById('goWaBtn');
+  btn.disabled=true;btn.innerHTML='⏳ بنرفع طلبك...';
+
+  // upload once (idempotent guard so re-clicks don't duplicate the row)
+  if(!ORDER.saved){
+    const result=await submitOrder();
+    ORDER.saveFailed=!result.ok;
+    ORDER.saved=result.ok;
+    if(result.ok){
+      ORDER.shipmentSerial=result.shipmentSerial;
+      ORDER.deposit=result.deposit;
+      ORDER.remaining=result.remaining;
+    }
+  }
+
+  const payNow = PAY.amount==='full' ? ORDER.total : ORDER.deposit;
+  const remaining = PAY.amount==='full' ? 0 : (ORDER.total-ORDER.deposit);
+  const kidsTxt=ORDER.kids.map((k,i)=>`   ${i+1}) ${k.n} (${k.gender} - ${k.age}) — ${k.story} — ${k.language}`).join('\n');
+  const serialLine = ORDER.shipmentSerial
+    ? `📋 رقم الشحنة: ${ORDER.shipmentSerial}`
+    : `📋 (لسه من غير رقم أوردر آلي — سجّله يدوي)`;
+
+  const blocks=[
+    "السلام عليكم 🌟 عايز أطلب قصة مطبوعة",
+    serialLine,
+    "👶 الأطفال:\n"+kidsTxt,
+    `🎁 الباقة: ${ORDER.packageLabel}\n👤 المستلم: ${ORDER.fullName}\n📱 الموبايل: ${ORDER.phone}\n📍 المحافظة: ${ORDER.governorate}\n🏠 العنوان: ${ORDER.address}`,
+    `💰 الإجمالي: ${ORDER.total} ج (شامل التوصيل)\n💳 حوّلت ${payNow} ج (${PAY.amount==='full'?'دفع كامل':'عربون 50%'}) على ${METHOD_LABEL[PAY.method]} — ${PAY.assignedNumber}`+(remaining?`\n🚚 الباقي عند الاستلام: ${remaining} ج`:''),
+    "📸 هبعت صورة التحويل دلوقتي ✅"
+  ];
+  const msg=blocks.join('\n\n');
+  window.location.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  setTimeout(()=>{btn.disabled=false;btn.innerHTML='<span style="font-size:22px">📤</span> ارسال بيانات التحويل';},2500);
+};
+
+/* ================= INIT (runs last, after everything is defined) ============ */
+Object.keys(GOVERNORATES).forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;govSel.appendChild(o);});
+govSel.onchange=()=>{renderPacks();calcPrice();};
+document.getElementById('addChildBtn').onclick=addChild;
+addChild();          // first child
+renderPacks();       // shows the "choose governorate first" prompt
+calcPrice();
+</script>
+</body>
+</html>
