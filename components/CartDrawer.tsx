@@ -11,12 +11,6 @@ export default function CartDrawer() {
     const q = items.map(i => encodeURIComponent(i.title)).join(',')
     window.location.href = '/order.html?stories=' + q
   }
-  const waCheckout = () => {
-    const lines = items.map((i, idx) => `${idx + 1}) ${i.title}`).join('\n')
-    const msg = `أهلاً، عايز أطلب القصص دي:\n${lines}\n\nالإجمالي التقريبي: ${price} ج (بدون الشحن)`
-    window.open('https://wa.me/201034502000?text=' + encodeURIComponent(msg), '_blank')
-  }
-
   return (
     <>
       {/* overlay */}
@@ -81,8 +75,7 @@ export default function CartDrawer() {
               <span className="font-tajawal font-black text-xl" style={{ color: 'var(--navy)' }}>{price} ج</span>
             </div>
             <div style={{ color: 'var(--gray-text)', fontSize: '11px', marginBottom: '12px' }}>+ الشحن يُحسب عند إتمام الطلب حسب المحافظة</div>
-            <button onClick={checkout} className="btn-primary w-full justify-center" style={{ padding: '13px', fontSize: '15px' }}>أكمل الطلب ✨</button>
-            <button onClick={waCheckout} style={{ marginTop: '8px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '11px', borderRadius: '14px', border: 'none', background: '#25D366', color: 'white', fontWeight: 700, fontFamily: 'var(--font-body)', cursor: 'pointer' }}>اطلب على واتساب 💬</button>
+            <button onClick={checkout} className="btn-primary w-full justify-center" style={{ padding: '14px', fontSize: '15px' }}>أكمل الطلب ✨</button>
           </div>
         )}
       </aside>

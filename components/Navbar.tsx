@@ -77,20 +77,14 @@ export default function Navbar() {
 
         {/* Right cluster */}
         <div className="flex items-center gap-2">
-          <a
-            href="https://wa.me/201034502000?text=أهلاً، عايز أعرف أكتر عن بطل ستوريز"
-            target="_blank" rel="noopener noreferrer"
-            className="hidden sm:flex"
-            aria-label="واتساب"
-            style={{ display:'flex', alignItems:'center', gap:'6px', padding:'9px 14px', borderRadius:'99px', background:'#25D366', color:'white', fontWeight:800, fontSize:'13.5px', fontFamily:'var(--font-body)' }}
-          >
-            💬 <span className="hidden lg:inline">واتساب</span>
-          </a>
-
           <CartBtn />
 
-          <a href="#catalog" className="hidden md:flex btn-primary text-sm px-5 py-2.5">
-            اصنع قصة طفلك ✨
+          <a
+            href="https://wa.me/201034502000?text=عايز قصة مخصصة بالكامل لطفلي من الصفر"
+            target="_blank" rel="noopener noreferrer"
+            className="hidden md:flex btn-primary text-sm px-5 py-2.5"
+          >
+            اطلب قصة مخصصة من الصفر ✨
           </a>
 
           {/* Mobile hamburger */}
@@ -117,8 +111,13 @@ export default function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="#catalog" onClick={() => setMenuOpen(false)} className="btn-primary mt-2 justify-center">
-              اصنع قصة طفلك ✨
+            <a
+              href="https://wa.me/201034502000?text=عايز قصة مخصصة بالكامل لطفلي من الصفر"
+              target="_blank" rel="noopener noreferrer"
+              onClick={() => setMenuOpen(false)}
+              className="btn-primary mt-2 justify-center"
+            >
+              اطلب قصة مخصصة من الصفر ✨
             </a>
           </div>
         </div>
