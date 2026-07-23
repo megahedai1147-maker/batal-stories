@@ -83,7 +83,7 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <a href="#order"   className="btn-primary text-base px-7 py-4">اصنع قصة طفلك الآن 🚀</a>
+              <a href="#catalog"   className="btn-primary text-base px-7 py-4">اصنع قصة طفلك الآن 🚀</a>
               <a href="#catalog" className="btn-outline text-base px-7 py-4">شوف القصص 📚</a>
             </div>
           </div>

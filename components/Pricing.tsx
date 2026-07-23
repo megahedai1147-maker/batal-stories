@@ -2,39 +2,31 @@
 
 const plans = [
   {
-    id:'pdf', icon:'📱', name:'نسخة PDF', tagline:'أسرع وأوفر — تستلمها فوراً',
-    popular:false, accentColor:'var(--purple)',
-    tiers:[
-      { label:'قصة واحدة',   price:80,  note:'' },
-      { label:'3 قصص',       price:199, note:'⭐ الأكتر مبيعاً', highlight:true },
-      { label:'6 قصص',       price:349, note:'وفّر 32%' },
-    ],
-    features:['تسليم خلال 48 ساعة','PDF عالي الجودة','قابل للطباعة في أي مكان','بالعربي أو الإنجليزي'],
+    id:'p1', icon:'📖', name:'قصة واحدة', tagline:'كتاب مطبوع فاخر لطفلك',
+    popular:false, accentColor:'var(--purple)', price:179, oldPrice:249,
+    features:['قصة مخصصة باسم وصورة طفلك','طباعة ألوان فاخرة','14 صفحة A5','توصيل لكل مصر'],
   },
   {
-    id:'print', icon:'📚', name:'كتاب مطبوع', tagline:'كتاب حقيقي يوصلك على بابك',
-    popular:true, accentColor:'var(--pink)',
-    tiers:[
-      { label:'كتاب مطبوع فاخر', price:300, oldPrice:450, note:'شامل التوصيل', highlight:true },
-    ],
-    features:['طباعة ألوان فاخرة','توصيل لكل مصر','12 صفحة ','التسليم 3-5 أيام','هدية للاحتفاظ بيها'],
+    id:'p2', icon:'📚', name:'قصتين', tagline:'وفّر أكتر مع قصتين',
+    popular:false, accentColor:'var(--teal)', price:339, oldPrice:479,
+    features:['كتابين مخصصين','قصتين مختلفتين','خصم على الاتنين','توصيل لكل مصر'],
   },
   {
-    id:'premium', icon:'👑', name:'باقة Premium', tagline:'هدية مناسبات لا تُنسى',
-    popular:false, accentColor:'var(--orange)',
-    tiers:[
-      { label:'كتاب + تغليف هدية', price:650, note:'الأعلى قيمة وشامل التوصيل', highlight:true },
-    ],
-    features:['كل مميزات المطبوع','تغليف هدية فاخر','هارد كافر','3 قصص (60 صفحة)','مثالي للمناسبات (هدايا واعياد ميلاد)','توصيل أولوية'],
+    id:'p3', icon:'🎁', name:'3 قصص', tagline:'الأكتر مبيعاً — أوفر باقة',
+    popular:true, accentColor:'var(--pink)', price:479, oldPrice:679,
+    features:['3 كتب مخصصة','3 قصص مختلفة','أعلى نسبة توفير','توصيل لكل مصر'],
+  },
+  {
+    id:'premium', icon:'👑', name:'بريميوم', tagline:'هدية مناسبات لا تُنسى',
+    popular:false, accentColor:'var(--orange)', price:1279, oldPrice:1799,
+    features:['3 قصص + تغليف هدية فاخر','هارد كافر','غلاف مقوّى ومميز','مثالي لأعياد الميلاد','توصيل أولوية'],
   },
 ]
 
 export default function Pricing() {
-
-
   return (
     <section id="pricing" className="py-24" style={{ background:'#F7F8FC' }}>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
         {/* Header */}
         <div className="text-center mb-14 reveal">
@@ -42,12 +34,12 @@ export default function Pricing() {
           <h2 className="section-title text-4xl mb-3">اختار الباقة المناسبة</h2>
           <div className="section-divider mx-auto"/>
           <p className="text-sm" style={{ color:'var(--gray-text)', fontFamily:'var(--font-body)' }}>
-            3 باقات تناسب كل ميزانية — والجودة واحدة في الكل ✨
+            كل الأسعار للكتاب المطبوع — الشحن يُحسب حسب المحافظة ✨
           </p>
         </div>
 
         {/* Plans */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan, i) => (
             <div
               key={plan.id}
@@ -59,62 +51,31 @@ export default function Pricing() {
                 boxShadow: plan.popular ? '0 8px 40px rgba(255,45,122,0.18)' : '0 4px 20px rgba(0,0,0,0.05)',
               }}
             >
-              {/* Popular ribbon */}
               {plan.popular && (
                 <div className="text-center text-xs font-bold py-2 text-white" style={{ background:'var(--grad-btn)', fontFamily:'var(--font-body)' }}>
-                  ⭐ الأكتر قيمة
+                  ⭐ الأكتر مبيعاً
                 </div>
               )}
 
-              <div className={`p-6 ${plan.popular ? '' : ''}`}>
-                {/* Icon */}
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4"
-                  style={{ background:`${plan.accentColor}15`, border:`1.5px solid ${plan.accentColor}25` }}
-                >
+              <div className="p-6">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4" style={{ background:`${plan.accentColor}15`, border:`1.5px solid ${plan.accentColor}25` }}>
                   {plan.icon}
                 </div>
                 <h3 className="font-tajawal font-black text-xl mb-1" style={{ color:'var(--navy)' }}>{plan.name}</h3>
                 <p className="text-xs mb-5" style={{ color:'var(--gray-text)', fontFamily:'var(--font-body)' }}>{plan.tagline}</p>
 
-                {/* Tiers */}
-                <div className="flex flex-col gap-2 mb-5">
-                  {plan.tiers.map(t => (
-                    <div
-                      key={t.label}
-                      className="flex items-center justify-between rounded-2xl px-3 py-3"
-                      style={{
-                        background: t.highlight ? `${plan.accentColor}10` : '#F7F8FC',
-                        border:     t.highlight ? `1.5px solid ${plan.accentColor}30` : '1.5px solid transparent',
-                      }}
-                    >
-                      <div>
-                        <div className="text-sm font-bold" style={{ color:'var(--navy)', fontFamily:'var(--font-body)' }}>{t.label}</div>
-                        {t.note && <div className="text-xs" style={{ color:plan.accentColor, fontFamily:'var(--font-body)' }}>{t.note}</div>}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {(t as any).oldPrice && (
-                          <div
-                            className="text-sm line-through"
-                            style={{ color:'var(--gray-text)', fontFamily:'var(--font-body)', opacity:0.5 }}
-                          >
-                            {(t as any).oldPrice} ج
-                          </div>
-                        )}
-                        <div className="font-tajawal font-black text-xl" style={{ color:plan.accentColor }}>{t.price} ج</div>
-                      </div>
-                    </div>
-                  ))}
+                {/* Price */}
+                <div className="flex items-baseline gap-2 mb-5">
+                  <span className="font-tajawal font-black text-3xl" style={{ color:plan.accentColor }}>{plan.price}</span>
+                  <span className="text-sm font-bold" style={{ color:plan.accentColor }}>ج</span>
+                  <span className="text-sm line-through" style={{ color:'var(--gray-text)', opacity:0.5, fontFamily:'var(--font-body)' }}>{plan.oldPrice} ج</span>
                 </div>
 
                 {/* Features */}
                 <div className="flex flex-col gap-2 mb-5">
                   {plan.features.map(f => (
                     <div key={f} className="flex items-center gap-2 text-sm" style={{ color:'var(--gray-text)', fontFamily:'var(--font-body)' }}>
-                      <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0"
-                        style={{ background:`${plan.accentColor}15`, color:plan.accentColor }}
-                      >✓</span>
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs flex-shrink-0" style={{ background:`${plan.accentColor}15`, color:plan.accentColor }}>✓</span>
                       {f}
                     </div>
                   ))}
@@ -122,9 +83,7 @@ export default function Pricing() {
 
                 {/* CTA */}
                 <a
-                  href={`https://wa.me/201034502000?text=${encodeURIComponent(`أريد الاستفسار عن ${plan.name}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#catalog"
                   className={plan.popular ? 'btn-primary w-full justify-center py-3' : ''}
                   style={!plan.popular ? {
                     display:'flex', alignItems:'center', justifyContent:'center',
@@ -134,7 +93,7 @@ export default function Pricing() {
                     textDecoration:'none', transition:'all 0.2s',
                   } : { display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-body)' }}
                 >
-                  اطلب دلوقتي ✨
+                  اختار قصصك ✨
                 </a>
               </div>
             </div>

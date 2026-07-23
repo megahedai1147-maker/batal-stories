@@ -1,11 +1,12 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { useCart } from './CartContext'
 
 type Category = 'قيم وأخلاق' | 'قصص إسلامية' | 'مغامرات واستكشاف' | 'أحلام وطموحات' | 'خيال وسحر' | 'آداب عامة' | 'أبطال' | 'أميرات'
 type Gender   = 'all' | 'boy' | 'girl'
 
-interface Story {
+export interface Story {
   id: number
   title: string
   gender: 'boy' | 'girl'
@@ -17,7 +18,7 @@ interface Story {
   hasImage: boolean
 }
 
-const stories: Story[] = [
+export const stories: Story[] = [
   // ══ قيم وأخلاق — ولد ══
   { id:1,  gender:'boy',  category:'قيم وأخلاق',           title:'الصدق ينجي',              emoji:'🤝', bg:'linear-gradient(135deg,#FF7A1A,#FFC72C)', desc:'طفلنا يتعلم إن الصدق حتى في أصعب المواقف هو الطريق الصح',           moral:'الصدق'          , hasImage:true },
   { id:2,  gender:'boy',  category:'قيم وأخلاق',           title:'شجاعة المختلف',           emoji:'💪', bg:'linear-gradient(135deg,#FF2D7A,#FF7A1A)', desc:'لما يكون مختلف عن باقي أصحابه يكتشف إن اختلافه هو قوته',            moral:'الثقة بالنفس'   , hasImage:true },
@@ -146,189 +147,95 @@ const genders = [{label:'الكل',value:'all'},{label:'👦 ولد',value:'boy'
 function StoryCover({ story, hasImage }: { story: Story; hasImage: boolean }) {
   if (hasImage) {
     return (
-      <div
-        className="relative w-full overflow-hidden"
-        style={{
-          aspectRatio: '3 / 4',
-          background: 'linear-gradient(135deg, #f5f5f5, #e8e8e8)',
-        }}
-      >
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: '3 / 4', background: 'linear-gradient(135deg, #f5f5f5, #e8e8e8)' }}>
         <Image
           src={`/stories/story-${story.id}.png`}
           alt={story.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          style={{
-            objectFit: 'contain',
-            objectPosition: 'center center',
-          }}
+          style={{ objectFit: 'contain', objectPosition: 'center center' }}
         />
-        {/* strong gradient at bottom for text */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.05) 70%, transparent 100%)',
-          }}
-        />
-        {/* gender badge — top right */}
-        <div
-          className="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full"
-          style={{
-            background: 'rgba(0,0,0,0.45)',
-            color: 'white',
-            fontFamily: 'var(--font-body)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,0.2)',
-          }}
-        >
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.05) 70%, transparent 100%)' }} />
+        <div className="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full"
+          style={{ background: 'rgba(0,0,0,0.45)', color: 'white', fontFamily: 'var(--font-body)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}>
           {story.gender === 'boy' ? '👦 ولد' : '👧 بنت'}
         </div>
-        {/* title + moral — bottom */}
         <div className="absolute bottom-0 right-0 left-0 p-4">
-          <div
-            className="font-tajawal font-black text-lg text-white leading-tight mb-2"
-            style={{
-              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)',
-              letterSpacing: '0.3px',
-            }}
-          >
+          <div className="font-tajawal font-black text-lg text-white leading-tight mb-2" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.9)', letterSpacing: '0.3px' }}>
             {story.title}
           </div>
-          <div
-            className="text-xs px-3 py-1.5 rounded-full inline-block font-bold"
-            style={{
-              background: 'rgba(255,255,255,0.18)',
-              color: 'rgba(255,255,255,0.95)',
-              fontFamily: 'var(--font-body)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              textShadow: '0 1px 3px rgba(0,0,0,0.5)',
-            }}
-          >
+          <div className="text-xs px-3 py-1.5 rounded-full inline-block font-bold"
+            style={{ background: 'rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.95)', fontFamily: 'var(--font-body)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
             {story.moral}
           </div>
         </div>
       </div>
     )
   }
-
-  /* ── Placeholder cover ── */
   return (
-    <div className="relative w-full flex flex-col items-center justify-center overflow-hidden"
-      style={{ aspectRatio: '3 / 4', background: story.bg }}>
-      {/* shine */}
-      <div className="absolute inset-0 opacity-20"
-        style={{background:'radial-gradient(circle at 25% 25%, white, transparent 55%)'}}/>
-
-      {/* strong bottom gradient */}
-      <div
-        className="absolute inset-0"
-        style={{ background:'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 75%)' }}
-      />
-
-      {/* Book shape SVG */}
-      <div className="relative z-10 mb-1">
-        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="6"  y="14" width="28" height="44" rx="4" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5"/>
-          <rect x="38" y="14" width="28" height="44" rx="4" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
-          <rect x="33" y="14" width="6" height="44" rx="2" fill="rgba(255,255,255,0.35)"/>
-          <rect x="12" y="26" width="16" height="2.5" rx="1.25" fill="rgba(255,255,255,0.5)"/>
-          <rect x="12" y="32" width="12" height="2.5" rx="1.25" fill="rgba(255,255,255,0.35)"/>
-          <rect x="12" y="38" width="14" height="2.5" rx="1.25" fill="rgba(255,255,255,0.35)"/>
-          <rect x="12" y="44" width="10" height="2.5" rx="1.25" fill="rgba(255,255,255,0.25)"/>
-          <circle cx="52" cy="36" r="14" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/>
-          <text x="52" y="42" textAnchor="middle" fontSize="16">{story.emoji}</text>
-        </svg>
-      </div>
-
-      {/* gender badge */}
+    <div className="relative w-full flex flex-col items-center justify-center overflow-hidden" style={{ aspectRatio: '3 / 4', background: story.bg }}>
+      <div className="absolute inset-0 opacity-20" style={{background:'radial-gradient(circle at 25% 25%, white, transparent 55%)'}}/>
+      <div className="absolute inset-0" style={{ background:'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 75%)' }} />
+      <div className="relative z-10 mb-1 text-5xl">{story.emoji}</div>
       <div className="absolute top-3 right-3 text-xs font-bold px-2 py-1 rounded-full"
         style={{background:'rgba(0,0,0,0.35)',color:'white',fontFamily:'var(--font-body)',backdropFilter:'blur(6px)',border:'1px solid rgba(255,255,255,0.2)'}}>
         {story.gender==='boy'?'👦 ولد':'👧 بنت'}
       </div>
-
-      {/* title + moral at bottom */}
       <div className="absolute bottom-0 right-0 left-0 p-3 z-10">
-        <div
-          className="font-tajawal font-black text-base text-white leading-tight mb-1.5"
-          style={{ textShadow:'0 2px 8px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,1)' }}
-        >
+        <div className="font-tajawal font-black text-base text-white leading-tight mb-1.5" style={{ textShadow:'0 2px 8px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,1)' }}>
           {story.title}
         </div>
-        <div className="flex items-center gap-2">
-          <span
-            className="text-xs px-2.5 py-1 rounded-full font-bold inline-block"
-            style={{background:'rgba(255,255,255,0.18)',color:'white',fontFamily:'var(--font-body)',backdropFilter:'blur(6px)',border:'1px solid rgba(255,255,255,0.3)'}}>
-            {story.moral}
-          </span>
-          <span
-            className="text-xs px-2 py-1 rounded-full"
-            style={{background:'rgba(0,0,0,0.25)',color:'rgba(255,255,255,0.7)',fontFamily:'var(--font-body)'}}>
-            🖼️ قريباً
-          </span>
-        </div>
+        <span className="text-xs px-2.5 py-1 rounded-full font-bold inline-block"
+          style={{background:'rgba(255,255,255,0.18)',color:'white',fontFamily:'var(--font-body)',backdropFilter:'blur(6px)',border:'1px solid rgba(255,255,255,0.3)'}}>
+          {story.moral}
+        </span>
       </div>
     </div>
   )
 }
 
-/* ── Story Card ── */
-function StoryCard({ story, isActive, onToggle }: {
-  story: Story
-  isActive: boolean
-  onToggle: () => void
-}) {
-  // true = يعرض الصورة من public/stories/story-{id}.png
-  // false = يعرض الـ placeholder الملون (لحد ما ترفع صورة القصة)
-  const hasImage = story.hasImage
-
+/* ── كارت القصة مع زرار "أضف للسلة" ── */
+export function StoryBuyCard({ story }: { story: Story }) {
+  const { add, remove, has } = useCart()
+  const inCart = has(story.id)
   return (
-    <div
-      className="card cursor-pointer"
-      onClick={onToggle}
-    >
-      <StoryCover story={story} hasImage={hasImage} />
-
-      <div className="p-4">
-        <p className="text-xs leading-relaxed" style={{color:'var(--gray-text)',fontFamily:'var(--font-body)'}}>
+    <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+      <StoryCover story={story} hasImage={story.hasImage} />
+      <div className="p-4" style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+        <p className="text-xs leading-relaxed" style={{ color: 'var(--gray-text)', fontFamily: 'var(--font-body)', flex: 1 }}>
           {story.desc}
         </p>
-
-        {isActive && (
-          <div className="mt-3 pt-3 border-t" style={{borderColor:'var(--gray-mid)'}}>
-            <p className="text-xs mb-3" style={{color:'var(--gray-text)',fontFamily:'var(--font-body)'}}>
-              البطل في هذه القصة سيكون{' '}
-              <strong style={{color:'var(--pink)'}}>طفلك</strong> هو! 🌟
-            </p>
-            <a
-              href={`https://wa.me/201034502000?text=${encodeURIComponent(`أريد طلب قصة "${story.title}" من قسم "${story.category}" لطفلي`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary text-xs px-4 py-2 w-full justify-center"
-              onClick={e => e.stopPropagation()}
-            >
-              اطلب هذه القصة ✨
-            </a>
+        <div className="flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="font-tajawal font-black text-lg" style={{ color: 'var(--pink)' }}>179 <span style={{ fontSize: '11px' }}>ج</span></span>
+            <span style={{ fontSize: '12px', textDecoration: 'line-through', color: 'var(--gray-text)', opacity: 0.5, fontFamily: 'var(--font-body)' }}>229 ج</span>
           </div>
-        )}
+          <span style={{ fontSize: '10px', fontWeight: 800, padding: '2px 8px', borderRadius: '99px', background: 'var(--pink-soft)', color: 'var(--pink)', fontFamily: 'var(--font-body)' }}>خصم 22%</span>
+        </div>
+        <button
+          onClick={() => (inCart ? remove(story.id) : add({ id: story.id, title: story.title, gender: story.gender, category: story.category }))}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+            padding: '11px', borderRadius: '14px', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '14px',
+            border: 'none', cursor: 'pointer', transition: 'all .2s', color: 'white',
+            background: inCart ? 'var(--teal)' : 'var(--grad-btn)',
+          }}
+        >
+          {inCart ? '✓ في السلة' : '➕ أضف للسلة'}
+        </button>
       </div>
     </div>
   )
 }
 
-/* ══════════════════════════════
-   MAIN CATALOG COMPONENT
-══════════════════════════════ */
+/* ══════════════════════════════ MAIN CATALOG ══════════════════════════════ */
 export default function Catalog() {
   const [activeCategory, setActiveCategory] = useState<Category>('قيم وأخلاق')
   const [gender, setGender]                 = useState<Gender>('all')
-  const [activeStory,   setActiveStory]     = useState<number|null>(null)
 
   const filtered = stories.filter(s =>
-    s.category === activeCategory &&
-    (gender === 'all' || s.gender === gender)
+    s.category === activeCategory && (gender === 'all' || s.gender === gender)
   )
-
   const meta = catMeta[activeCategory]
 
   return (
@@ -338,10 +245,10 @@ export default function Catalog() {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="section-eyebrow">📚 كتالوج القصص</div>
-          <h2 className="section-title text-4xl mb-3">اختار قصة طفلك</h2>
+          <h2 className="section-title text-4xl mb-3">اختار قصص طفلك</h2>
           <div className="section-divider mx-auto"/>
           <p className="text-sm max-w-md mx-auto" style={{color:'var(--gray-text)',fontFamily:'var(--font-body)'}}>
-            94 قصة مخصصة في 8 أقسام — كل قصة فيها طفلك هو البطل بالاسم 🌟
+            94 قصة مخصصة في 8 أقسام — اختار اللي يعجبك وضيفه للسلة 🌟
           </p>
         </div>
 
@@ -352,7 +259,7 @@ export default function Catalog() {
             const active = activeCategory === cat
             return (
               <button key={cat}
-                onClick={() => { setActiveCategory(cat); setActiveStory(null) }}
+                onClick={() => setActiveCategory(cat)}
                 className="flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200"
                 style={{
                   background: active ? m.color    : 'white',
@@ -371,11 +278,10 @@ export default function Catalog() {
 
         {/* Gender filter */}
         <div className="flex justify-center mb-8">
-          <div className="flex gap-1 p-1.5 rounded-2xl"
-            style={{background:'white',border:'1.5px solid var(--gray-mid)',boxShadow:'0 2px 10px rgba(0,0,0,0.05)'}}>
+          <div className="flex gap-1 p-1.5 rounded-2xl" style={{background:'white',border:'1.5px solid var(--gray-mid)',boxShadow:'0 2px 10px rgba(0,0,0,0.05)'}}>
             {genders.map(f => (
               <button key={f.value}
-                onClick={() => { setGender(f.value as Gender); setActiveStory(null) }}
+                onClick={() => setGender(f.value as Gender)}
                 className="px-5 py-2 rounded-xl text-sm font-bold transition-all duration-200"
                 style={{
                   background: gender===f.value ? 'var(--grad-btn)' : 'transparent',
@@ -390,43 +296,19 @@ export default function Catalog() {
         </div>
 
         {/* Category strip */}
-        <div className="flex items-center gap-3 mb-6 px-5 py-4 rounded-2xl"
-          style={{background:meta.bg, border:`1.5px solid ${meta.color}25`}}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-            style={{background:`${meta.color}20`}}>
-            {meta.icon}
-          </div>
+        <div className="flex items-center gap-3 mb-6 px-5 py-4 rounded-2xl" style={{background:meta.bg, border:`1.5px solid ${meta.color}25`}}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{background:`${meta.color}20`}}>{meta.icon}</div>
           <div>
             <div className="font-tajawal font-black text-lg" style={{color:'var(--navy)'}}>{activeCategory}</div>
             <div className="text-xs" style={{color:meta.color,fontFamily:'var(--font-body)'}}>
               {filtered.length} قصة{gender!=='all'?(gender==='boy'?' — للأولاد':' — للبنات'):' — للجميع'}
             </div>
           </div>
-          <div className="mr-auto flex gap-2">
-            {(['boy','girl'] as const).map(g => {
-              const cnt = stories.filter(s => s.category===activeCategory && s.gender===g).length
-              return (
-                <div key={g} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold"
-                  style={{background:'white',color:'var(--navy)',fontFamily:'var(--font-body)'}}>
-                  {g==='boy'?'👦':'👧'} {cnt}
-                </div>
-              )
-            })}
-          </div>
-
         </div>
 
         {/* Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map((story) => (
-            <div key={story.id}>
-              <StoryCard
-                story={story}
-                isActive={activeStory===story.id}
-                onToggle={() => setActiveStory(activeStory===story.id ? null : story.id)}
-              />
-            </div>
-          ))}
+          {filtered.map((story) => <StoryBuyCard key={story.id} story={story} />)}
         </div>
 
         {filtered.length===0 && (
@@ -441,8 +323,7 @@ export default function Catalog() {
           <p className="text-sm mb-4" style={{color:'var(--gray-text)',fontFamily:'var(--font-body)'}}>
             مش لاقي القصة المناسبة؟ نكتبلك واحدة من الصفر!
           </p>
-          <a href="https://wa.me/201034502000?text=عايز قصة مخصصة بالكامل لطفلي"
-            target="_blank" rel="noopener noreferrer" className="btn-primary">
+          <a href="https://wa.me/201034502000?text=عايز قصة مخصصة بالكامل لطفلي" target="_blank" rel="noopener noreferrer" className="btn-primary">
             اطلب قصة مخصصة من الصفر ✨
           </a>
         </div>
