@@ -322,8 +322,8 @@ const STORIES = ["الصدق ينجي","شجاعة المختلف","المشار
 //   2 children → قصتين + premium
 //   3 children → 3 قصص + premium
 //   4+ children → adaptive multi-story pack (3-pack based) + premium  ⚠️ assumption
-const AFTER_PRICES = {1:199, 2:359, 3:499};
-const PRE_PRICES   = {1:299, 2:539, 3:750}; // 539 = estimate, confirm real 2-story pre-discount number
+const AFTER_PRICES = {1:179, 2:339, 3:479};
+const PRE_PRICES   = {1:249, 2:479, 3:679}; // 539 = estimate, confirm real 2-story pre-discount number
 function packageCost(n, prices){ // DP over pack sizes {1,2,3} for 4+ children
   const cost=[0];
   for(let i=1;i<=n;i++){
@@ -333,7 +333,7 @@ function packageCost(n, prices){ // DP over pack sizes {1,2,3} for 4+ children
   }
   return cost[n];
 }
-function premiumPrice(n){ return 1299*n; }
+function premiumPrice(n){ return 1279*n; }
 function premiumPreDiscount(n){ return 1799*n; }
 
 function premiumCard(n){
@@ -394,6 +394,7 @@ function addChild(){
     </div>
     <label>اسم الطفل <span style="color:var(--rose)">*</span></label>
     <input type="text" class="c-name" placeholder="مثال: يوسف">
+    <div class="c-name-en-hint" style="display:none;font-size:12px;color:#c026d3;margin-top:5px;font-weight:600">⚠️ اكتب اسم الطفل بالإنجليزي (English) — لأن القصة إنجليزي</div>
 
     <label>الطفل ولد ولا بنت؟ <span style="color:var(--rose)">*</span></label>
     <div class="chips c-gender">
@@ -436,6 +437,16 @@ function addChild(){
   const up=block.querySelector('.c-uploader');
   const file=block.querySelector('.c-file');
   file.onchange=()=>handleUpload(file,up,id);
+
+  var langSel=block.querySelector('.c-language');
+  var nameInp=block.querySelector('.c-name');
+  var enHint=block.querySelector('.c-name-en-hint');
+  function syncLang(){
+    var en=langSel.value==='إنجليزي';
+    if(enHint)enHint.style.display=en?'block':'none';
+    if(nameInp)nameInp.placeholder=en?'Example: Youssef':'مثال: يوسف';
+  }
+  langSel.onchange=syncLang; syncLang();
 
   const rm=block.querySelector('[data-rm]');
   if(rm)rm.onclick=()=>{block.remove();delete childPhotos[id];renderPacks();calcPrice();};
@@ -524,13 +535,14 @@ function calcPrice(){
 
 /* ---- gather + validate ---- */
 function gather(){
-  const kids=[];let kidErr=false,photoErr=false;
+  const kids=[];let kidErr=false,photoErr=false,nameEnErr=false;
   document.querySelectorAll('.child-block').forEach(b=>{
     const id=b.dataset.id;
     const name=b.querySelector('.c-name'),age=b.querySelector('.c-age'),story=b.querySelector('.c-story'),language=b.querySelector('.c-language');
     const gender=b.dataset.gender||"";
     [name,age,story].forEach(e=>e.classList.remove('err'));
     if(!name.value.trim()){name.classList.add('err');kidErr=true;}
+    if(language.value==='إنجليزي' && name.value.trim() && !/^[A-Za-z][A-Za-z .'-]*$/.test(name.value.trim())){name.classList.add('err');kidErr=true;nameEnErr=true;}
     if(!gender)kidErr=true;
     if(!age.value){age.classList.add('err');kidErr=true;}
     if(!story.value){story.classList.add('err');kidErr=true;}
@@ -542,16 +554,17 @@ function gather(){
       mimeType: childPhotos[id]?childPhotos[id].mimeType:""
     });
   });
-  return {kids,kidErr,photoErr};
+  return {kids,kidErr,photoErr,nameEnErr};
 }
 
 document.getElementById('reviewBtn').onclick=()=>{
   const fullName=document.getElementById('fullName'),phone=document.getElementById('phone'),address=document.getElementById('address');
   [fullName,phone,address,govSel].forEach(e=>e.classList.remove('err'));
-  const {kids,kidErr,photoErr}=gather();
+  const {kids,kidErr,photoErr,nameEnErr}=gather();
   let errs=[];
   if(kidErr)errs.push("بيانات كل طفل كاملة (بالجنس)");
   if(photoErr)errs.push("صورة كل طفل");
+  if(nameEnErr)errs.push("اكتب اسم الطفل بالإنجليزي (English) للقصة الإنجليزية");
   if(!govSel.value){govSel.classList.add('err');errs.push("المحافظة");}
   if(!S.packType)errs.push("الباقة");
   if(!fullName.value.trim()){fullName.classList.add('err');errs.push("اسم المستلم");}
@@ -699,6 +712,53 @@ document.getElementById('addChildBtn').onclick=addChild;
 addChild();          // first child
 renderPacks();       // shows the "choose governorate first" prompt
 calcPrice();
+
+/* ---- preselect stories from ?stories=a,b,c (السلة من الموقع) — طفل لكل قصة ---- */
+(function(){
+  try{
+    var sp=new URLSearchParams(location.search);
+    var raw=sp.get('stories')||sp.get('story');
+    if(!raw) return;
+    var titles=raw.split(',').map(function(t){return (t||'').trim();}).filter(Boolean);
+    if(!titles.length) return;
+    // نضيف طفل لكل قصة (الطفل الأول موجود من addChild الأولى)
+    var guard=0;
+    while(document.querySelectorAll('.child-block').length < titles.length && guard<20){ addChild(); guard++; }
+    var blocks=document.querySelectorAll('.child-block');
+    titles.forEach(function(title,i){
+      var b=blocks[i]; if(!b) return;
+      var sel=b.querySelector('.c-story'); if(!sel) return;
+      var opt=[].slice.call(sel.options).find(function(o){
+        return o.value===title || (o.textContent||'').trim()===title;
+      });
+      if(opt){
+        sel.value=opt.value||opt.textContent;
+        // اقفل القصة: اخفي القائمة واعرض اسمها كنص ثابت (العميل مش هيختار تاني)
+        sel.style.display='none';
+        var chip=document.createElement('div');
+        chip.style.cssText='display:flex;align-items:center;gap:6px;background:var(--grape-soft,#f3ecff);border:1.5px solid var(--line,#eee);border-radius:12px;padding:11px 13px;font-weight:700;color:var(--grape,#6b46c1);font-size:14px';
+        chip.textContent='📖 '+(opt.textContent||title);
+        sel.parentNode.insertBefore(chip, sel.nextSibling);
+      }
+    });
+    var addBtn=document.getElementById('addChildBtn'); if(addBtn) addBtn.style.display='none';
+    renderPacks(); calcPrice();
+  }catch(e){}
+})();
+
+/* ---- report height to parent when embedded in an iframe (صفحة الموقع) ---- */
+(function(){
+  if(window.parent===window) return; // مش داخل iframe
+  function postH(){
+    var h=Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    try{ window.parent.postMessage({type:'batal-order-height', height:h}, '*'); }catch(e){}
+  }
+  window.addEventListener('load', postH);
+  window.addEventListener('resize', postH);
+  if(window.ResizeObserver){ try{ new ResizeObserver(postH).observe(document.body); }catch(e){} }
+  setInterval(postH, 1000); // شبكة أمان للمحتوى اللي بيتغير
+  postH();
+})();
 </script>
 </body>
 </html>
